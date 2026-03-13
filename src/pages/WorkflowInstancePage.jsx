@@ -17,7 +17,7 @@ const WorkflowInstancePage = () => {
     useEffect(() => {
         getWorkflowInstanceDetails(baseURL, id).then(setWorkflowInstanceDetails);
         getWorkflowInstanceLogs(baseURL, id).then(setWorkflowInstanceLogs);
-    }, [id]);
+    }, [baseURL, id]);
 
     const formatDelay = (logDate) => {
         if (!workflowInstanceDetails?.dateCreated) {
@@ -28,7 +28,7 @@ const WorkflowInstancePage = () => {
             (new Date(logDate) - new Date(workflowInstanceDetails.dateCreated)) / 1000
         );
 
-        return `${seconds} after workflow start`;
+        return `${seconds} seconds after workflow start`;
     };
 
     const getLabelDisplayType = (type) => {
@@ -46,14 +46,146 @@ const WorkflowInstancePage = () => {
         }
     };
 
+    const details = workflowInstanceDetails;
+    const reviewed = details?.objectReviewed;
+
+    const startedAt = details?.dateCreated ? new Date(details.dateCreated) : null;
+    const completedAt = details?.dateCompletion ? new Date(details.dateCompletion) : null;
+
+    const executionStatus = completedAt ? 'Completed' : 'Still running';
+
+    const formatDate = (date) =>
+    new Intl.DateTimeFormat("fr-FR", {
+        dateStyle: "medium",
+        timeStyle: "short",
+    }).format(date);
+
+    const formatDuration = (seconds) => {
+    if (seconds < 60) return `${seconds}s`;
+
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+
+    if (minutes < 60) return `${minutes}m ${remainingSeconds}s`;
+
+    const hours = Math.floor(minutes / 60);
+    const remainingMinutes = minutes % 60;
+
+    return `${hours}h ${remainingMinutes}m`;
+    };
+
+    const durationInSeconds =
+    startedAt && completedAt
+        ? Math.max(0, Math.round((completedAt.getTime() - startedAt.getTime()) / 1000))
+        : null;
+
     return (
         <Provider spritemap={window.Liferay.Icons.spritemap}>
             <div className="workflow-instance-page container-fluid container-fluid-max-xl py-4">
+
                 <div className="mb-4">
-                    <h1 className="mb-1">Workflow instance</h1>
-                    <p className="text-secondary mb-0">
-                        Workflow history and context variables
-                    </p>
+                    {details ? (
+                        <>
+                            <div className="d-flex align-items-center flex-wrap gap-2 mb-1">
+                                <h1 className="mb-0 mr-2">{details.workflowDefinitionName}</h1>
+                                <Label displayType="info">
+                                    Version {details.workflowDefinitionVersion}
+                                </Label>
+                            </div>
+
+                            <div className="text-secondary small">
+                                Workflow instance ID {details.id}
+                            </div>
+                        </>
+                    ) : (
+                        <h1 className="mb-1">Workflow instance</h1>
+                    )}
+
+                    {details && (
+                        <div className="row mt-4">
+                            {reviewed && (
+                                <div className="col-md-6 mb-3">
+                                    <div className="p-3 border rounded bg-light h-100">
+                                        <div className="small text-secondary mb-2">
+                                            Reviewed asset
+                                        </div>
+
+                                        <div className="d-flex justify-content-between align-items-start">
+                                            <div className="pr-3">
+                                                <div className="fw-semibold">
+                                                    {reviewed.assetTitle}
+                                                </div>
+                                                <div className="text-secondary small">
+                                                    ID {reviewed.id}
+                                                </div>
+                                            </div>
+
+                                            <Label displayType="secondary">
+                                                {reviewed.assetType}
+                                            </Label>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            <div className={reviewed ? 'col-md-6 mb-3' : 'col-12 mb-3'}>
+                                <div className="p-3 border rounded bg-light h-100">
+                                    <div className="d-flex justify-content-between align-items-start mb-3">
+                                        <div className="small text-secondary">
+                                            Execution
+                                        </div>
+
+                                        <Label displayType={completedAt ? 'success' : 'info'}>
+                                            {executionStatus}
+                                        </Label>
+                                    </div>
+
+                                    <div className="row">
+                                        <div className="col-md-6">
+                                            {startedAt && (
+                                                <div className="mb-2">
+                                                    <div className="small text-secondary">
+                                                        Started
+                                                    </div>
+                                                    <div>{formatDate(startedAt)}</div>
+                                                </div>
+                                            )}
+
+                                            {completedAt && (
+                                                <div>
+                                                    <div className="small text-secondary">
+                                                        Ended
+                                                    </div>
+                                                    <div>{formatDate(completedAt)}</div>
+                                                </div>
+                                            )}
+                                        </div>
+                                        <div className="col-md-6">
+                                            {durationInSeconds !== null ? (
+                                                <div className="mb-3">
+                                                    <div className="small text-secondary">
+                                                        Duration
+                                                    </div>
+                                                    <div className="fw-semibold">
+                                                        {formatDuration(durationInSeconds)}
+                                                    </div>
+                                                </div>
+                                            ) : (
+                                                <div className="mb-3">
+                                                    <div className="small text-secondary">
+                                                        Status
+                                                    </div>
+                                                    <div className="fw-semibold">
+                                                        Still running
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </div>
 
                 <div className="workflow-section mb-4">
