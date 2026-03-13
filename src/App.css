@@ -1,0 +1,79 @@
+.small-collapsible .panel-header {
+    padding: 8px;
+}
+
+.small-collapsible .panel {
+    margin-bottom: 8px;
+}
+
+.workflow-log-card,
+.context-card {
+    background: #fff;
+    border: 1px solid #e7e7ed;
+    border-radius: 0.75rem;
+    padding: 1rem 1.25rem;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+    transition: all 0.2s ease;
+}
+
+.workflow-log-card:hover,
+.context-card:hover {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    transform: translateY(-1px);
+}
+
+.workflow-log-list {
+    position: relative;
+    margin-left: 1rem;
+}
+
+.workflow-log-list::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0.4rem;
+    width: 2px;
+    height: 100%;
+    background: #e7e7ed;
+}
+
+.workflow-log-item {
+    position: relative;
+    padding-left: 2rem;
+    margin-bottom: 1rem;
+}
+
+.workflow-log-item::before {
+    content: "";
+    position: absolute;
+    top: 1.2rem;
+    left: 0;
+    width: 0.9rem;
+    height: 0.9rem;
+    border-radius: 50%;
+    background: #0b5fff;
+    border: 3px solid #fff;
+    box-shadow: 0 0 0 1px #d9d9e3;
+}
+
+.log-code,
+.context-code {
+    background: #f7f8f9;
+    border: 1px solid #e7e7ed;
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+    font-size: 0.85rem;
+    line-height: 1.4;
+    white-space: pre-wrap;
+    word-break: break-word;
+    margin: 0;
+}
+
+.workflow-instance-page {
+    background: #f8f9fa;
+    min-height: 100vh;
+}
+
+.workflow-section {
+    margin-bottom: 2rem;
+}

@@ -1,0 +1,18 @@
+assemble:
+    - from: build/static
+      into: static
+workflow-manager-cx-js-import-maps-entry:
+    bareSpecifier: workflowManagerCX
+    name: Workflow Manager CX JS Import Maps Entry
+    type: jsImportMapsEntry
+    url: assets/index-*.js
+workflow-manager-custom-element:
+    friendlyURLMapping: workflow-manager
+    htmlElementName: workflow-manager
+    instanceable: false
+    name: Workflow Manager Custom Element
+    portletCategoryName: category.client-extensions
+    type: customElement
+    urls:
+        - assets/index-*.js
+    useESM: true    
